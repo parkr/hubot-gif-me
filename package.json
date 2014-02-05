@@ -1,0 +1,26 @@
+{
+  "name": "hubot-gif-me",
+  "version": "0.0.1",
+  "description": "Show a gif from your gif collection.",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/parkr/hubot-gif-me"
+  },
+  "keywords": [
+    "hubot",
+    "gif",
+    "images",
+    "image",
+    "bot"
+  ],
+  "author": "Parker Moore",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/parkr/hubot-gif-me/issues"
+  },
+  "homepage": "https://github.com/parkr/hubot-gif-me"
+}
