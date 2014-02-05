@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/parkr/hubot-gif-me/issues"
   },
-  "homepage": "https://github.com/parkr/hubot-gif-me"
+  "homepage": "https://github.com/parkr/hubot-gif-me",
+  "dependencies": {
+    "hubot": "~2.7.1"
+  }
 }
