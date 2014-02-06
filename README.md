@@ -12,6 +12,8 @@ Bring your personal gifs into your favourite chat client.
 
 ### Installation
 
+These instructions assume you've deployed Hubot to Heroku. Please make the appropriate adjustments for other hosting solutions.
+
 ```bash
 $ npm install --save hubot-gif-me
 $ hk set HUBOT_GIF_ME_ENDPOINT="blah"
