@@ -20,4 +20,4 @@ $ vim external-scripts.json # add "hubot-gif-me" to the array
 
 ### Credit
 
-@jglovier had the idea to use GitHub as a git host. @parkr had the idea to tie this into hubot.
+@jglovier had the idea to use GitHub as a gif host. @parkr had the idea to tie this into hubot.
