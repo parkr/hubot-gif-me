@@ -1,6 +1,6 @@
 {
   "name": "hubot-gif-me",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Show a gif from your gif collection.",
   "main": "index.coffee",
   "scripts": {
@@ -13,9 +13,11 @@
   "keywords": [
     "hubot",
     "gif",
+    "gifs",
     "images",
     "image",
-    "bot"
+    "bot",
+    "animate"
   ],
   "author": "Parker Moore",
   "license": "MIT",
@@ -24,6 +26,8 @@
   },
   "homepage": "https://github.com/parkr/hubot-gif-me",
   "dependencies": {
-    "hubot": "~2.7.1"
+    "hubot": "~2.7.1",
+    "underscore": "^1.6.0",
+    "url": "^0.7.9"
   }
 }

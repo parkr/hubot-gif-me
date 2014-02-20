@@ -14,7 +14,7 @@ Bring your personal gifs into your favourite chat client.
 
 ```bash
 $ npm install --save hubot-gif-me
-$ hk set HUBOT_GIF_ME_ENDPOINT="blah"
+$ hk set HUBOT_GIF_INDEX="http://example.com/gif_index.json"
 $ vim external-scripts.json # add "hubot-gif-me" to the array
 ```
 
