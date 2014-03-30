@@ -50,7 +50,10 @@ class GifManager
       @fullUrl(match.path)
 
   fetch: (query) ->
-    @fetchFromCategory(query) or @fetchFromIndex(query) or "No match for #{query}."
+    if query.test("list")
+      @index.join("\n")
+    else
+      @fetchFromCategory(query) or @fetchFromIndex(query) or "No match for #{query}."
 
 module.exports = (robot) ->
   robot.respond /gif me( \w+)?/i, (msg) ->
