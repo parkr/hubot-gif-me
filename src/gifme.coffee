@@ -50,7 +50,12 @@ class GifManager
       @fullUrl(match.path)
 
   fetch: (query) ->
-    @fetchFromCategory(query) or @fetchFromIndex(query) or "No match for #{query}."
+    if query.test("list")
+      @index.map (gif) ->
+        gif.path
+      .join("\n")
+    else
+      @fetchFromCategory(query) or @fetchFromIndex(query) or "No match for #{query}."
 
   bomb: (msg, num) ->
     for i in [1..num]
