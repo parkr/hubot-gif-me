@@ -84,7 +84,7 @@ module.exports = (robot) ->
 
   robot.respond /gif bomb( \w+)?/i, (msg) ->
     num   = (msg.match[1] || "").trim()
-    num   = "10" unless num.length > 0
+    num   = "5" unless num.length > 0
     index = process.env.HUBOT_GIF_INDEX
 
     unless index?
