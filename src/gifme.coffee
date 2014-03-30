@@ -51,7 +51,9 @@ class GifManager
 
   fetch: (query) ->
     if query.test("list")
-      @index.join("\n")
+      @index.map (gif) ->
+        gif.path
+      .join("\n")
     else
       @fetchFromCategory(query) or @fetchFromIndex(query) or "No match for #{query}."
 
