@@ -52,6 +52,10 @@ class GifManager
   fetch: (query) ->
     @fetchFromCategory(query) or @fetchFromIndex(query) or "No match for #{query}."
 
+  bomb: (msg, num) ->
+    for i in [1..num]
+      msg.send @fullUrl(random(@index).path)
+
 module.exports = (robot) ->
   robot.respond /gif me( \w+)?/i, (msg) ->
     asked = msg.match[1].trim()
@@ -72,3 +76,20 @@ module.exports = (robot) ->
       info = Url.parse index
       mgr = new GifManager("#{info.protocol}//#{info.hostname}", JSON.parse(body))
       msg.send mgr.fetch(query)
+
+  robot.respond /gif bomb( \w+)?/i, (msg) ->
+    num   = (msg.match[1] || "").trim()
+    num   = "10" unless num.length > 0
+    index = process.env.HUBOT_GIF_INDEX
+
+    unless index?
+      msg.send "HUBOT_GIF_INDEX isn't set, don't know where your gifs are!"
+      return
+
+    robot.http(index).get() (err, res, body) ->
+      if err
+        msg.send "gifme: There was an error fetching the index: #{err}"
+        return
+      info = Url.parse index
+      mgr  = new GifManager("#{info.protocol}//#{info.hostname}", JSON.parse(body))
+      mgr.bomb(msg, num)
