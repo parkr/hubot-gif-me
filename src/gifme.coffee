@@ -54,7 +54,7 @@ class GifManager
 
   bomb: (msg, num) ->
     for i in [1..num]
-      msg.send random(@index)
+      msg.send @fullUrl(random(@index).path)
 
 module.exports = (robot) ->
   robot.respond /gif me( \w+)?/i, (msg) ->
