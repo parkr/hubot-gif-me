@@ -9,14 +9,19 @@
 #   HUBOT_GIF_INDEX - the full URL to the JSON index file
 #
 # Commands:
-#   hubot gif me silly
-#   hubot gif me rage
+#   hubot gif me
+#   hubot gif me <query>
+#   hubot gif list
+#   hubot gif bomb <n>
 
-_   = require 'underscore'
-Url = require 'url'
+_     = require 'underscore'
+Url   = require 'url'
+
+# Setup index:
+indexUrl = process.env.HUBOT_GIF_INDEX
+index    = null
 
 class GifManager
-
   constructor: (host, index) ->
     @host        = host
     @index       = index
@@ -42,59 +47,64 @@ class GifManager
       @fullUrl(@random(match).path)
 
   fetchFromIndex: (query) ->
-    match = null
-    _.each @index, (gif) ->
-      if not match? and query.test gif.path
-        match = gif
+    match = _.find @index, (gif) ->
+      query.test gif.path
     if match?
       @fullUrl(match.path)
 
-  fetch: (query) ->
-    if query.test("list")
-      @index.map (gif) ->
-        gif.path
-      .join("\n")
-    else
-      @fetchFromCategory(query) or @fetchFromIndex(query) or "No match for #{query}."
+  fetchRandom: ->
+    @fullUrl(@random(@index).path)
 
-  bomb: (msg, num) ->
-    for i in [1..num]
-      msg.send @fullUrl(@random(@index).path)
+  fetch: (query) ->
+    @fetchFromCategory(query) or @fetchFromIndex(query) or "No match for #{query}."
+
+  list: ->
+    @index.map (gif) ->
+      gif.path
+    .join("\n")
+
+  bomb: (num) ->
+    self = @
+    _.range(0, num).map ->
+      self.fetchRandom()
 
 module.exports = (robot) ->
-  robot.respond /gif me( \w+)?/i, (msg) ->
+
+  # Fetch index every hour.
+  fetchIndex = () ->
+    robot.http(indexUrl).get() (err, res, body) ->
+      if err
+        robot.logger.info "gif-me encountered a problem fetching the index: #{err}"
+        return
+      info  = Url.parse(indexUrl)
+      index = new GifManager("#{info.protocol}//#{info.hostname}", JSON.parse(body))
+      robot.logger.info "gif-me index updated."
+  fetchIndex()
+  setInterval fetchIndex, 1000*60*60
+
+  # /gif me
+  robot.respond /gif me$/i, (msg) ->
+    msg.send index.bomb(1)...
+
+  # /gif me <query>
+  robot.respond /gif me( \w+)/i, (msg) ->
     asked = msg.match[1].trim()
-    unless asked?
-      msg.send "Gotta ask me for somethin' homeboy."
-      return
     query = new RegExp(asked, 'i')
-    index = process.env.HUBOT_GIF_INDEX
 
-    unless index?
-      msg.send "HUBOT_GIF_INDEX isn't set, don't know where your gifs are!"
-      return
+    if index?
+      msg.send index.fetch(query)
+    else
+      msg.send "No index available."
 
-    robot.http(index).get() (err, res, body) ->
-      if err
-        msg.send "gifme: There was an error fetching the index: #{err}"
-        return
-      info = Url.parse index
-      mgr = new GifManager("#{info.protocol}//#{info.hostname}", JSON.parse(body))
-      msg.send mgr.fetch(query)
+  # /gif list
+  robot.respond /gif list/i, (msg) ->
+    msg.send index.list()
 
+  # /gif bomb [n]
   robot.respond /gif bomb( \w+)?/i, (msg) ->
-    num   = (msg.match[1] || "").trim()
-    num   = "5" unless num.length > 0
-    index = process.env.HUBOT_GIF_INDEX
+    num = parseInt((msg.match[1] || "5").trim())
 
-    unless index?
-      msg.send "HUBOT_GIF_INDEX isn't set, don't know where your gifs are!"
-      return
-
-    robot.http(index).get() (err, res, body) ->
-      if err
-        msg.send "gifme: There was an error fetching the index: #{err}"
-        return
-      info = Url.parse index
-      mgr  = new GifManager("#{info.protocol}//#{info.hostname}", JSON.parse(body))
-      mgr.bomb(msg, num)
+    if index?
+      msg.send index.bomb(num)...
+    else
+      msg.send "No index available."
