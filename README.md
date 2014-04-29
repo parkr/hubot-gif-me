@@ -10,6 +10,9 @@ Bring your personal gifs into your favourite chat client.
 ```text
 /gif me
 /gif me itworks
+/gif list
+/gif bomb
+/gif bomb 3
 ```
 
 ### Installation
